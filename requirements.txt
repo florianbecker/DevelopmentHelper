@@ -1,1 +1,1 @@
-charset-normalizer==1.4.1
+cchardet==0.3.5

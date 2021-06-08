@@ -30,16 +30,18 @@
 # */
 
 import sys
-from charset_normalizer import CharsetNormalizerMatches as CnM
+import cchardet as chardet
+
+def convert_encoding(data, new_coding = 'UTF-8'):
+  encoding = chardet.detect(data)['encoding']
+
+  if new_coding.upper() != encoding.upper():
+    data = data.decode(encoding).encode(new_coding)
+
+  return data
 
 # arg
 file = sys.argv[1]
-
-# normalize encoding
-try:
-  CnM.normalize(file)
-except IOError as e:
-  print('Sadly, we are unable to perform charset normalization.', str(e))
 
 # line endings
 windows = b'\r\n'
@@ -48,6 +50,7 @@ unix = b'\n'
 # convert line endings
 f = open(file, 'rb')
 content = f.read()
+content = convert_encoding(content)
 content = content.replace(windows, unix)
 f.close()
 
